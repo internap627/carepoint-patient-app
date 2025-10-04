@@ -1,0 +1,60 @@
+// src/data/doctors.js
+export const doctors = [
+    {
+      id: 1,
+      name: "Dr. Sarah Ahmed",
+      specialty: "dermatology",
+      experience: "10 years",
+      fee: "$80",
+      image: "https://via.placeholder.com/150",
+    },
+    {
+      id: 2,
+      name: "Dr. James Patel",
+      specialty: "dermatology",
+      experience: "7 years",
+      fee: "$70",
+      image: "https://via.placeholder.com/150",
+    },
+    {
+      id: 3,
+      name: "Dr. Maria Lopez",
+      specialty: "cardiology",
+      experience: "12 years",
+      fee: "$100",
+      image: "https://via.placeholder.com/150",
+    },
+    {
+      id: 4,
+      name: "Dr. Kevin Wong",
+      specialty: "cardiology",
+      experience: "9 years",
+      fee: "$95",
+      image: "https://via.placeholder.com/150",
+    },
+    {
+      id: 5,
+      name: "Dr. Anita Kumar",
+      specialty: "pediatrics",
+      experience: "6 years",
+      fee: "$60",
+      image: "https://via.placeholder.com/150",
+    },
+    {
+      id: 6,
+      name: "Dr. David Johnson",
+      specialty: "neurology",
+      experience: "15 years",
+      fee: "$120",
+      image: "https://via.placeholder.com/150",
+    },
+    {
+      id: 7,
+      name: "Dr. Emily Brown",
+      specialty: "orthopedics",
+      experience: "8 years",
+      fee: "$90",
+      image: "https://via.placeholder.com/150",
+    },
+  ];
+  
