@@ -1,5 +1,6 @@
 import React from "react";
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
+import { LocalHospital } from "@mui/icons-material"; // Logo icon
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
@@ -19,30 +20,34 @@ export default function Navbar() {
   return (
     <AppBar position="sticky">
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-        
-        {/* Left: Logo */}
-        <Typography variant="h6" sx={{ cursor: "pointer" }} onClick={() => navigate("/")}>
-          CarePoint
-        </Typography>
+
+        {/* Left: Logo + CarePoint */}
+        <Box
+          sx={{ display: "flex", alignItems: "center", cursor: "pointer" }}
+          onClick={() => navigate("/")}
+        >
+          <LocalHospital sx={{ mr: 1 }} /> {/* Small logo icon */}
+          <Typography variant="h6">CarePoint</Typography>
+        </Box>
 
         {/* Center: Welcome / Navigation */}
-        <Box sx={{ display: "flex", gap: 2 }}>
-          {!currentUser ? (
+        {!currentUser ? (
+          <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
             <Typography variant="h6">Welcome to CarePoint</Typography>
-          ) : (
-            <>
-              <Button color="inherit" onClick={() => navigate("/categories")}>
-                Browse Doctors
-              </Button>
-              <Button color="inherit" onClick={() => navigate("/appointments")}>
-                My Appointments
-              </Button>
-              <Button color="inherit" onClick={() => navigate("/billing")}>
-                Billing
-              </Button>
-            </>
-          )}
-        </Box>
+          </Box>
+        ) : (
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <Button color="inherit" onClick={() => navigate("/categories")}>
+              Browse Doctors
+            </Button>
+            <Button color="inherit" onClick={() => navigate("/appointments")}>
+              My Appointments
+            </Button>
+            <Button color="inherit" onClick={() => navigate("/billing")}>
+              Billing
+            </Button>
+          </Box>
+        )}
 
         {/* Right: Logout */}
         {currentUser && (

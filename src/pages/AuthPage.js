@@ -1,8 +1,23 @@
 import React, { useState } from "react";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
+import { 
+  getAuth, 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword 
+} from "firebase/auth";
 import { app } from "../firebase";
 import { 
-  TextField, Button, Container, Typography, Box, Tabs, Tab, Paper 
+  TextField, 
+  Button, 
+  Container, 
+  Typography, 
+  Box, 
+  Tabs, 
+  Tab, 
+  Paper, 
+  Dialog, 
+  DialogTitle, 
+  DialogContent, 
+  DialogActions 
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
@@ -13,17 +28,38 @@ export default function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalInfo, setModalInfo] = useState({ title: "", message: "", success: false });
 
   const handleAuth = async () => {
     try {
       if (tab === 0) {
         await signInWithEmailAndPassword(auth, email, password);
+        setModalInfo({
+          title: "Login Successful",
+          message: "Welcome back! Redirecting to browse doctors...",
+          success: true,
+        });
+        setModalOpen(true);
+        // Redirect to categories instead of home
+        setTimeout(() => navigate("/categories"), 2000);
       } else {
         await createUserWithEmailAndPassword(auth, email, password);
+        setModalInfo({
+          title: "Registration Successful",
+          message: "Your account has been created successfully! Redirecting to browse doctors...",
+          success: true,
+        });
+        setModalOpen(true);
+        setTimeout(() => navigate("/categories"), 2000);
       }
-      navigate("/");
     } catch (err) {
-      setError(err.message);
+      setModalInfo({
+        title: "Error",
+        message: err.message,
+        success: false,
+      });
+      setModalOpen(true);
     }
   };
 
@@ -32,7 +68,10 @@ export default function AuthPage() {
       <Paper elevation={3} sx={{ mt: 8, p: 4 }}>
         <Tabs
           value={tab}
-          onChange={(e, newValue) => setTab(newValue)}
+          onChange={(e, newValue) => {
+            setTab(newValue);
+            setError("");
+          }}
           variant="fullWidth"
         >
           <Tab label="Login" />
@@ -71,6 +110,24 @@ export default function AuthPage() {
           </Button>
         </Box>
       </Paper>
+
+      {/* Feedback Modal */}
+      <Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
+        <DialogTitle sx={{ color: modalInfo.success ? "green" : "red" }}>
+          {modalInfo.title}
+        </DialogTitle>
+        <DialogContent>{modalInfo.message}</DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setModalOpen(false)}
+            variant="contained"
+            color={modalInfo.success ? "success" : "error"}
+          >
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 }
+
