@@ -22,15 +22,15 @@ export const doctors = [
       specialty: "cardiology",
       experience: "12 years",
       fee: "$100",
-      image: "https://via.placeholder.com/150",
+      image: "/images/maria_l.jpg",
     },
     {
       id: 4,
-      name: "Dr. Kevin Wong",
+      name: "Dr. Kelly Wong",
       specialty: "cardiology",
       experience: "9 years",
       fee: "$95",
-      image: "https://via.placeholder.com/150",
+      image: "/images/kelly_w.jpg",
     },
     {
       id: 5,
