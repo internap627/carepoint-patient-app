@@ -56,7 +56,7 @@ export default function Navbar() {
               cursor: "pointer",
               "&:hover": { opacity: 0.9 },
             }}
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/categories")}
           >
             <LocalHospital sx={{ mr: 1, color: "#b2dfdb" }} />
             <Typography
@@ -129,6 +129,19 @@ export default function Navbar() {
                 }}
               >
                 Billing
+              </Button>
+              <Button
+                onClick={() => navigate("/dashboard")}
+                sx={{
+                  color: "#e0f2f1",
+                  fontWeight: 500,
+                  textTransform: "none",
+                  "&:hover": {
+                    backgroundColor: "#004d40",
+                  },
+                }}
+              >
+                Dashboard
               </Button>
             </Box>
           )}

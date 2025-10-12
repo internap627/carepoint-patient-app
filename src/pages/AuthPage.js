@@ -27,31 +27,30 @@ export default function AuthPage() {
   const [tab, setTab] = useState(0);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [modalInfo, setModalInfo] = useState({ title: "", message: "", success: false });
 
   const handleAuth = async () => {
     try {
+      let title, message;
       if (tab === 0) {
         await signInWithEmailAndPassword(auth, email, password);
-        setModalInfo({
-          title: "Login Successful",
-          message: "Welcome back! Redirecting to browse doctors...",
-          success: true,
-        });
-        setModalOpen(true);
-        setTimeout(() => navigate("/categories"), 2000);
+        title = "Login Successful";
+        message = "Welcome back! You will be redirected shortly.";
       } else {
         await createUserWithEmailAndPassword(auth, email, password);
-        setModalInfo({
-          title: "Registration Successful",
-          message: "Your account has been created successfully! Redirecting to browse doctors...",
-          success: true,
-        });
-        setModalOpen(true);
-        setTimeout(() => navigate("/categories"), 2000);
+        title = "Registration Successful";
+        message = "Your account has been created! You will be redirected shortly.";
       }
+
+      setModalInfo({ title, message, success: true });
+      setModalOpen(true);
+      // Redirect after a short delay to allow user to see the message
+      setTimeout(() => {
+        setModalOpen(false);
+        navigate("/categories");
+      }, 2000);
+
     } catch (err) {
       setModalInfo({
         title: "Error",
@@ -61,6 +60,7 @@ export default function AuthPage() {
       setModalOpen(true);
     }
   };
+  const handleCloseModal = () => setModalOpen(false);
 
   return (
     <Container maxWidth="sm">
@@ -79,7 +79,6 @@ export default function AuthPage() {
           value={tab}
           onChange={(e, newValue) => {
             setTab(newValue);
-            setError("");
           }}
           variant="fullWidth"
           textColor="inherit"
@@ -108,7 +107,6 @@ export default function AuthPage() {
           <Typography variant="h5" fontWeight="600" gutterBottom color="#333">
             {tab === 0 ? "Login to your account" : "Create a new account"}
           </Typography>
-          {error && <Typography color="error">{error}</Typography>}
 
           <TextField
             fullWidth
@@ -149,14 +147,14 @@ export default function AuthPage() {
       </Paper>
 
       {/* Feedback Modal */}
-      <Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
+      <Dialog open={modalOpen} onClose={handleCloseModal}>
         <DialogTitle sx={{ color: modalInfo.success ? "green" : "red" }}>
           {modalInfo.title}
         </DialogTitle>
         <DialogContent>{modalInfo.message}</DialogContent>
         <DialogActions>
           <Button
-            onClick={() => setModalOpen(false)}
+            onClick={handleCloseModal}
             variant="contained"
             color={modalInfo.success ? "success" : "error"}
           >

@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AuthPage from "./pages/AuthPage";
-import HomePage from "./pages/HomePage";
 import { AuthProvider } from "./context/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
 import Navbar from "./components/Navbar";
@@ -8,6 +7,7 @@ import CategoriesPage from "./pages/CategoriesPage";
 import DoctorsPage from "./pages/DoctorsPage";
 import AppointmentsPage from "./pages/AppointmentsPage";
 import BillingPage from "./pages/BillingPage";
+import DashboardPage from "./pages/DashboardPage";
 
 
 function App() {
@@ -17,14 +17,6 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/auth" element={<AuthPage />} />
-          <Route
-            path="/"
-            element={
-              <PrivateRoute>
-                <HomePage />
-              </PrivateRoute>
-            }
-          />
           <Route
             path="/categories"
             element={
@@ -57,6 +49,14 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route
+            path="/dashboard"
+            element={
+              <PrivateRoute>
+                <DashboardPage />
+              </PrivateRoute>
+            }
+          />
         </Routes>
       </Router>
     </AuthProvider>
@@ -64,4 +64,3 @@ function App() {
 }
 
 export default App;
-
