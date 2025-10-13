@@ -13,7 +13,7 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
-import { doc, getDoc, setDoc, deleteDoc, collection, query, where, getDocs } from "firebase/firestore";
+import { doc, onSnapshot, setDoc, deleteDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
 import { useAuth } from "../context/AuthContext";
 
@@ -29,6 +29,8 @@ export default function DashboardPage() {
   });
   const [open, setOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [emergencyActive, setEmergencyActive] = useState(false);
+  const [cancelOpen, setCancelOpen] = useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -36,6 +38,14 @@ export default function DashboardPage() {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleCancelClickOpen = () => {
+    setCancelOpen(true);
+  };
+
+  const handleCancelClose = () => {
+    setCancelOpen(false);
   };
 
   const handleDelete = async () => {
@@ -68,36 +78,38 @@ export default function DashboardPage() {
     }
   };
 
+  const handleCancelAlert = async () => {
+    if (!currentUser) return;
+    const userDocRef = doc(db, "users", currentUser.uid);
+    await setDoc(userDocRef, { emergencyActive: false }, { merge: true });
+    handleCancelClose();
+  };
+
   useEffect(() => {
-    const fetchUserData = async () => {
-      if (!currentUser) return;
-      try {
-        const userDocRef = doc(db, "users", currentUser.uid);
-        const userDocSnap = await getDoc(userDocRef);
-        if (userDocSnap.exists()) {
-          const data = userDocSnap.data();
-          setUserData(data);
-          setFormState({
-            name: data.name || "",
-            phone: data.phone || "",
-            emergencyContact: data.emergencyContact || "",
-          });
-        } else {
-          // If no user data exists, initialize with empty strings
-          setUserData(null);
-          setFormState({
-            name: currentUser.displayName || "",
-            phone: "",
-            emergencyContact: "",
-          });
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      } finally {
-        setLoading(false);
+    if (!currentUser) return;
+    const userDocRef = doc(db, "users", currentUser.uid);
+    const unsubscribe = onSnapshot(userDocRef, (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setUserData(data);
+        setFormState({
+          name: data.name || "",
+          phone: data.phone || "",
+          emergencyContact: data.emergencyContact || "",
+        });
+        setEmergencyActive(data.emergencyActive || false);
+      } else {
+        // If no user data exists, initialize with empty strings
+        setUserData(null);
+        setFormState({
+          name: currentUser.displayName || "",
+          phone: "",
+          emergencyContact: "",
+        });
       }
-    };
-    fetchUserData();
+      setLoading(false);
+    });
+    return () => unsubscribe();
   }, [currentUser]);
 
   const handleEdit = () => {
@@ -158,6 +170,29 @@ export default function DashboardPage() {
         minHeight: "100vh",
       }}
     >
+      {emergencyActive && (
+        <Box
+          sx={{
+            mb: 4,
+            p: 2,
+            backgroundColor: "#f0f7f7",
+            borderRadius: 2,
+            textAlign: "center",
+          }}
+        >
+          <span style={{ fontSize: '2rem', animation: 'pulse-emoji 2s infinite' }}>🚨</span>
+          <Typography variant="h6" color="#e65100">
+            Emergency alert active. CarePoint team has been contacted.
+          </Typography>
+          <Button
+            variant="contained"
+            onClick={handleCancelClickOpen}
+            sx={{ mt: 2, backgroundColor: "#00695c" }}
+          >
+            Cancel Alert
+          </Button>
+        </Box>
+      )}
       <Box
         sx={{
           mb: 5,
@@ -277,9 +312,30 @@ export default function DashboardPage() {
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} disabled={deleting}>Cancel</Button>
-          <Button onClick={handleDelete} autoFocus sx={{ color: "#d32f2f" }} disabled={deleting}>
+          <Button onClick={handleClose} disabled={deleting} sx={{ color: '#0a4b4f', '&:hover': { backgroundColor: 'rgba(10, 75, 79, 0.1)' } }}>Cancel</Button>
+          <Button onClick={handleDelete} autoFocus sx={{ color: '#0a4b4f', '&:hover': { backgroundColor: 'rgba(10, 75, 79, 0.1)' } }} disabled={deleting}>
             Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={cancelOpen}
+        onClose={handleCancelClose}
+        aria-labelledby="alert-dialog-title-cancel"
+        aria-describedby="alert-dialog-description-cancel"
+      >
+        <DialogTitle id="alert-dialog-title-cancel">
+          {"Confirm Cancellation"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description-cancel">
+            Are you sure you want to cancel the emergency alert?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelClose} sx={{ color: '#0a4b4f', '&:hover': { backgroundColor: 'rgba(10, 75, 79, 0.1)' } }}>No</Button>
+          <Button onClick={handleCancelAlert} autoFocus sx={{ color: '#0a4b4f', '&:hover': { backgroundColor: 'rgba(10, 75, 79, 0.1)' } }}>
+            Yes
           </Button>
         </DialogActions>
       </Dialog>

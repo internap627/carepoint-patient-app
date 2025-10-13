@@ -8,6 +8,7 @@ import DoctorsPage from "./pages/DoctorsPage";
 import AppointmentsPage from "./pages/AppointmentsPage";
 import BillingPage from "./pages/BillingPage";
 import DashboardPage from "./pages/DashboardPage";
+import EmergencyButton from "./components/EmergencyButton";
 
 
 function App() {
@@ -58,6 +59,7 @@ function App() {
             }
           />
         </Routes>
+        <EmergencyButton />
       </Router>
     </AuthProvider>
   );
