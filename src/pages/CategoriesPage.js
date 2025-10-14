@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, Card, CardContent, Typography, Box, CardMedia } from "@mui/material";
+import { Grid, Card, CardContent, Typography, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { categories } from "../data/categories";
 import { getAuth } from "firebase/auth";
@@ -64,13 +64,12 @@ export default function CategoriesPage() {
                 },
               }}
             >
-              <CardMedia
-                component="img"
-                height="200"
-                image={cat.image}
-                alt={cat.name}
+              <Box
                 sx={{
-                  objectFit: "cover",
+                  height: 200,
+                  backgroundImage: `url(${cat.image})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
                 }}
               />
               <CardContent
